@@ -1,9 +1,9 @@
-use serde::Serialize;
 use std::io::{Read, Seek, Write};
 
 use crate::mp4box::*;
 
-#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+#[cfg_attr(feature = "json", derive(serde::Serialize))]
 pub struct DinfBox {
     dref: DrefBox,
 }
@@ -27,6 +27,7 @@ impl Mp4Box for DinfBox {
         self.get_size()
     }
 
+    #[cfg(feature = "json")]
     fn to_json(&self) -> Result<String> {
         Ok(serde_json::to_string(&self).unwrap())
     }
@@ -89,12 +90,13 @@ impl<W: Write> WriteBox<&mut W> for DinfBox {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq)]
+#[cfg_attr(feature = "json", derive(serde::Serialize))]
 pub struct DrefBox {
     pub version: u8,
     pub flags: u32,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     pub url: Option<UrlBox>,
 }
 
@@ -131,6 +133,7 @@ impl Mp4Box for DrefBox {
         self.get_size()
     }
 
+    #[cfg(feature = "json")]
     fn to_json(&self) -> Result<String> {
         Ok(serde_json::to_string(&self).unwrap())
     }
@@ -206,7 +209,8 @@ impl<W: Write> WriteBox<&mut W> for DrefBox {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq)]
+#[cfg_attr(feature = "json", derive(serde::Serialize))]
 pub struct UrlBox {
     pub version: u8,
     pub flags: u32,
@@ -248,6 +252,7 @@ impl Mp4Box for UrlBox {
         self.get_size()
     }
 
+    #[cfg(feature = "json")]
     fn to_json(&self) -> Result<String> {
         Ok(serde_json::to_string(&self).unwrap())
     }

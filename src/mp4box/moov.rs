@@ -1,24 +1,24 @@
-use serde::Serialize;
 use std::io::{Read, Seek, Write};
 
 use crate::meta::MetaBox;
 use crate::mp4box::*;
 use crate::mp4box::{mvex::MvexBox, mvhd::MvhdBox, trak::TrakBox, udta::UdtaBox};
 
-#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+#[cfg_attr(feature = "json", derive(serde::Serialize))]
 pub struct MoovBox {
     pub mvhd: MvhdBox,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     pub meta: Option<MetaBox>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     pub mvex: Option<MvexBox>,
 
-    #[serde(rename = "trak")]
+    #[cfg_attr(feature = "json", serde(rename = "trak"))]
     pub traks: Vec<TrakBox>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     pub udta: Option<UdtaBox>,
 }
 
@@ -51,6 +51,7 @@ impl Mp4Box for MoovBox {
         self.get_size()
     }
 
+    #[cfg(feature = "json")]
     fn to_json(&self) -> Result<String> {
         Ok(serde_json::to_string(&self).unwrap())
     }

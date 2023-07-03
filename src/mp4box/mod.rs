@@ -204,6 +204,7 @@ boxtype! {
 pub trait Mp4Box: Sized {
     fn box_type(&self) -> BoxType;
     fn box_size(&self) -> u64;
+    #[cfg(feature = "json")]
     fn to_json(&self) -> Result<String>;
     fn summary(&self) -> Result<String>;
 }
@@ -319,6 +320,7 @@ pub fn write_zeros<W: Write>(writer: &mut W, size: u64) -> Result<()> {
     Ok(())
 }
 
+#[cfg(feature = "json")]
 mod value_u32 {
     use crate::types::FixedPointU16;
     use serde::{self, Serializer};
@@ -331,6 +333,7 @@ mod value_u32 {
     }
 }
 
+#[cfg(feature = "json")]
 mod value_i16 {
     use crate::types::FixedPointI8;
     use serde::{self, Serializer};
@@ -343,6 +346,7 @@ mod value_i16 {
     }
 }
 
+#[cfg(feature = "json")]
 mod value_u8 {
     use crate::types::FixedPointU8;
     use serde::{self, Serializer};

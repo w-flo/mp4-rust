@@ -1,26 +1,25 @@
 use std::io::{Read, Seek};
 
-use serde::Serialize;
-
 use crate::mp4box::hdlr::HdlrBox;
 use crate::mp4box::ilst::IlstBox;
 use crate::mp4box::*;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
-#[serde(tag = "hdlr")]
-#[serde(rename_all = "lowercase")]
+#[derive(Debug, Clone, PartialEq, Eq)]
+#[cfg_attr(feature = "json", derive(serde::Serialize))]
+#[cfg_attr(feature = "json", serde(tag = "hdlr"))]
+#[cfg_attr(feature = "json", serde(rename_all = "lowercase"))]
 pub enum MetaBox {
     Mdir {
-        #[serde(skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
         ilst: Option<IlstBox>,
     },
 
-    #[serde(skip)]
+    #[cfg_attr(feature = "json", serde(skip))]
     Unknown {
-        #[serde(skip)]
+        #[cfg_attr(feature = "json", serde(skip))]
         hdlr: HdlrBox,
 
-        #[serde(skip)]
+        #[cfg_attr(feature = "json", serde(skip))]
         data: Vec<u8>,
     },
 }
@@ -56,6 +55,7 @@ impl Mp4Box for MetaBox {
         self.get_size()
     }
 
+    #[cfg(feature = "json")]
     fn to_json(&self) -> Result<String> {
         Ok(serde_json::to_string(&self).unwrap())
     }

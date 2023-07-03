@@ -1,15 +1,15 @@
 use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
-use serde::Serialize;
 use std::io::{Read, Seek, Write};
 
 use crate::mp4box::*;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq)]
+#[cfg_attr(feature = "json", derive(serde::Serialize))]
 pub struct SmhdBox {
     pub version: u8,
     pub flags: u32,
 
-    #[serde(with = "value_i16")]
+    #[cfg_attr(feature = "json", serde(with = "value_i16"))]
     pub balance: FixedPointI8,
 }
 
@@ -42,6 +42,7 @@ impl Mp4Box for SmhdBox {
         self.get_size()
     }
 
+    #[cfg(feature = "json")]
     fn to_json(&self) -> Result<String> {
         Ok(serde_json::to_string(&self).unwrap())
     }

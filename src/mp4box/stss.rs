@@ -1,16 +1,16 @@
 use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
-use serde::Serialize;
 use std::io::{Read, Seek, Write};
 use std::mem::size_of;
 
 use crate::mp4box::*;
 
-#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+#[cfg_attr(feature = "json", derive(serde::Serialize))]
 pub struct StssBox {
     pub version: u8,
     pub flags: u32,
 
-    #[serde(skip_serializing)]
+    #[cfg_attr(feature = "json", serde(skip_serializing))]
     pub entries: Vec<u32>,
 }
 
@@ -33,6 +33,7 @@ impl Mp4Box for StssBox {
         self.get_size()
     }
 
+    #[cfg(feature = "json")]
     fn to_json(&self) -> Result<String> {
         Ok(serde_json::to_string(&self).unwrap())
     }

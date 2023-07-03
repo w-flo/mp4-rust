@@ -3,12 +3,12 @@ use std::collections::HashMap;
 use std::io::{Read, Seek};
 
 use byteorder::ByteOrder;
-use serde::Serialize;
 
 use crate::mp4box::data::DataBox;
 use crate::mp4box::*;
 
-#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+#[cfg_attr(feature = "json", derive(serde::Serialize))]
 pub struct IlstBox {
     pub items: HashMap<MetadataKey, IlstItemBox>,
 }
@@ -36,6 +36,7 @@ impl Mp4Box for IlstBox {
         self.get_size()
     }
 
+    #[cfg(feature = "json")]
     fn to_json(&self) -> Result<String> {
         Ok(serde_json::to_string(&self).unwrap())
     }
@@ -111,7 +112,8 @@ impl<W: Write> WriteBox<&mut W> for IlstBox {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+#[cfg_attr(feature = "json", derive(serde::Serialize))]
 pub struct IlstItemBox {
     pub data: DataBox,
 }

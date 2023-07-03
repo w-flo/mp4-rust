@@ -1,9 +1,9 @@
 use crate::mp4box::vpcc::VpccBox;
 use crate::mp4box::*;
 use crate::Mp4Box;
-use serde::Serialize;
 
-#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+#[cfg_attr(feature = "json", derive(serde::Serialize))]
 pub struct Vp09Box {
     pub version: u8,
     pub flags: u32,
@@ -74,6 +74,7 @@ impl Mp4Box for Vp09Box {
         0x6A
     }
 
+    #[cfg(feature = "json")]
     fn to_json(&self) -> Result<String> {
         Ok(serde_json::to_string(&self).unwrap())
     }
