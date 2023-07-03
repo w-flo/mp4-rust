@@ -61,6 +61,8 @@
 //! mp4 = "0.7.0"
 //! ```
 //!
+//! Enable the `json` feature to add a `to_json()` method for box types.
+//!
 //! [mp4box]: https://github.com/alfg/mp4-rust/blob/master/src/mp4box/mod.rs
 //! [examples]: https://github.com/alfg/mp4-rust/tree/master/examples
 #![doc(html_root_url = "https://docs.rs/mp4/*")]

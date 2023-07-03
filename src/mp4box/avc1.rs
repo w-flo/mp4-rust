@@ -1,19 +1,19 @@
 use byteorder::{BigEndian, ReadBytesExt, WriteBytesExt};
-use serde::Serialize;
 use std::io::{Read, Seek, Write};
 
 use crate::mp4box::*;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq)]
+#[cfg_attr(feature = "json", derive(serde::Serialize))]
 pub struct Avc1Box {
     pub data_reference_index: u16,
     pub width: u16,
     pub height: u16,
 
-    #[serde(with = "value_u32")]
+    #[cfg_attr(feature = "json", serde(with = "value_u32"))]
     pub horizresolution: FixedPointU16,
 
-    #[serde(with = "value_u32")]
+    #[cfg_attr(feature = "json", serde(with = "value_u32"))]
     pub vertresolution: FixedPointU16,
     pub frame_count: u16,
     pub depth: u16,
@@ -67,6 +67,7 @@ impl Mp4Box for Avc1Box {
         self.get_size()
     }
 
+    #[cfg(feature = "json")]
     fn to_json(&self) -> Result<String> {
         Ok(serde_json::to_string(&self).unwrap())
     }
@@ -158,7 +159,8 @@ impl<W: Write> WriteBox<&mut W> for Avc1Box {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+#[cfg_attr(feature = "json", derive(serde::Serialize))]
 pub struct AvcCBox {
     pub configuration_version: u8,
     pub avc_profile_indication: u8,
@@ -199,6 +201,7 @@ impl Mp4Box for AvcCBox {
         size
     }
 
+    #[cfg(feature = "json")]
     fn to_json(&self) -> Result<String> {
         Ok(serde_json::to_string(&self).unwrap())
     }
@@ -267,7 +270,8 @@ impl<W: Write> WriteBox<&mut W> for AvcCBox {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+#[cfg_attr(feature = "json", derive(serde::Serialize))]
 pub struct NalUnit {
     pub bytes: Vec<u8>,
 }

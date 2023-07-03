@@ -1,4 +1,3 @@
-use serde::Serialize;
 use std::borrow::Cow;
 use std::convert::TryFrom;
 use std::fmt;
@@ -9,7 +8,8 @@ use crate::*;
 pub use bytes::Bytes;
 pub use num_rational::Ratio;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(feature = "json", derive(serde::Serialize))]
 pub struct FixedPointU8(Ratio<u16>);
 
 impl FixedPointU8 {
@@ -30,7 +30,8 @@ impl FixedPointU8 {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(feature = "json", derive(serde::Serialize))]
 pub struct FixedPointI8(Ratio<i16>);
 
 impl FixedPointI8 {
@@ -51,7 +52,8 @@ impl FixedPointI8 {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(feature = "json", derive(serde::Serialize))]
 pub struct FixedPointU16(Ratio<u32>);
 
 impl FixedPointU16 {
@@ -86,7 +88,8 @@ impl fmt::Display for BoxType {
     }
 }
 
-#[derive(Default, PartialEq, Eq, Clone, Copy, Serialize)]
+#[derive(Default, PartialEq, Eq, Clone, Copy)]
+#[cfg_attr(feature = "json", derive(serde::Serialize))]
 pub struct FourCC {
     pub value: [u8; 4],
 }
@@ -657,7 +660,8 @@ pub fn creation_time(creation_time: u64) -> u64 {
     }
 }
 
-#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
+#[cfg_attr(feature = "json", derive(serde::Serialize))]
 pub enum DataType {
     #[default]
     Binary = 0x000000,
@@ -679,7 +683,8 @@ impl TryFrom<u32> for DataType {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "json", derive(serde::Serialize))]
 pub enum MetadataKey {
     Title,
     Year,

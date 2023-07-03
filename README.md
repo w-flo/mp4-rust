@@ -66,6 +66,8 @@ or add to your `Cargo.toml`:
 mp4 = "0.13.0"
 ```
 
+Enable the `json` feature to add a `to_json()` method for box types.
+
 #### Documentation
 * https://docs.rs/mp4/
 
