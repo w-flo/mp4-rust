@@ -7,6 +7,8 @@ pub enum Error {
     #[error("{0}")]
     IoError(#[from] std::io::Error),
     #[error("{0}")]
+    FromUtf8Error(#[from] std::string::FromUtf8Error),
+    #[error("{0}")]
     InvalidData(&'static str),
     #[error("{0} not found")]
     BoxNotFound(BoxType),

@@ -85,6 +85,8 @@ pub(crate) mod moov;
 pub(crate) mod mp4a;
 pub(crate) mod mvex;
 pub(crate) mod mvhd;
+pub(crate) mod ncdt;
+pub(crate) mod nctg;
 pub(crate) mod smhd;
 pub(crate) mod stbl;
 pub(crate) mod stco;
@@ -178,6 +180,8 @@ boxtype! {
     TrafBox => 0x74726166,
     TrunBox => 0x7472756E,
     UdtaBox => 0x75647461,
+    NcdtBox => 0x4E434454,
+    NctgBox => 0x4E435447,
     MetaBox => 0x6d657461,
     DinfBox => 0x64696e66,
     DrefBox => 0x64726566,

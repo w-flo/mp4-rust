@@ -1,6 +1,7 @@
 use std::io::{Read, Seek};
 
 use crate::mp4box::meta::MetaBox;
+use crate::mp4box::ncdt::NcdtBox;
 use crate::mp4box::*;
 
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
@@ -8,6 +9,8 @@ use crate::mp4box::*;
 pub struct UdtaBox {
     #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     pub meta: Option<MetaBox>,
+    #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
+    pub ncdt: Option<NcdtBox>,
 }
 
 impl UdtaBox {
@@ -19,6 +22,9 @@ impl UdtaBox {
         let mut size = HEADER_SIZE;
         if let Some(meta) = &self.meta {
             size += meta.box_size();
+        }
+        if let Some(ncdt) = &self.ncdt {
+            size += ncdt.box_size();
         }
         size
     }
@@ -48,6 +54,7 @@ impl<R: Read + Seek> ReadBox<&mut R> for UdtaBox {
         let start = box_start(reader)?;
 
         let mut meta = None;
+        let mut ncdt = None;
 
         let mut current = reader.stream_position()?;
         let end = start + size;
@@ -65,6 +72,9 @@ impl<R: Read + Seek> ReadBox<&mut R> for UdtaBox {
                 BoxType::MetaBox => {
                     meta = Some(MetaBox::read_box(reader, s)?);
                 }
+                BoxType::NcdtBox => {
+                    ncdt = Some(NcdtBox::read_box(reader, s)?);
+                }
                 _ => {
                     // XXX warn!()
                     skip_box(reader, s)?;
@@ -76,7 +86,7 @@ impl<R: Read + Seek> ReadBox<&mut R> for UdtaBox {
 
         skip_bytes_to(reader, start + size)?;
 
-        Ok(UdtaBox { meta })
+        Ok(UdtaBox { meta, ncdt })
     }
 }
 
@@ -100,7 +110,10 @@ mod tests {
 
     #[test]
     fn test_udta_empty() {
-        let src_box = UdtaBox { meta: None };
+        let src_box = UdtaBox {
+            meta: None,
+            ncdt: None,
+        };
 
         let mut buf = Vec::new();
         src_box.write_box(&mut buf).unwrap();
@@ -119,6 +132,7 @@ mod tests {
     fn test_udta() {
         let src_box = UdtaBox {
             meta: Some(MetaBox::default()),
+            ncdt: None,
         };
 
         let mut buf = Vec::new();
